@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .models import User
+from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
-from . import db
 
 
 auth = Blueprint('auth',__name__)
@@ -15,15 +15,14 @@ def login():
 def login_post():
     email = request.form.get('email')
     password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
     
     user = User.query.filter_by(email=email).first() #searches for the user in the db by querying the email
 
-    if not user and not check_password_hash(user.password, password):
-        flash('Please check your login details and try again.')
+    if not user or not check_password_hash(user.password, password):
+        flash('Login details are incorrect. Please try again.')
         return redirect(url_for('auth.login'))
 
-    login_user(user, remember=remember)
+    login_user(user)
 
     return redirect(url_for('main.profile'))
 
@@ -41,7 +40,7 @@ def signup_post():
 
     if user: #if email is registered, inform user and redirect to login page
         flash('Email address in use!')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.signup'))
     else: #else create user using credentials entered in form
         #we create a user in the database with the credentials provided and password is hashed/encrypted for security reasons 
         new_usr = User(email=email, name=name, password = generate_password_hash(password, method='sha256'))
@@ -51,4 +50,5 @@ def signup_post():
 
 @auth.route('/logout') #log out of account
 def logout():
+    logout_user()
     return redirect(url_for('main.index'))
