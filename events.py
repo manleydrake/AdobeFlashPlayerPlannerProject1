@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
 
 #ONLY EXECUTE ONCE
-cursor.execute("CREATE TABLE events(event char(50), owner char(50), date char(50), time char(50));")
+#cursor.execute("CREATE TABLE events(event char(50), owner char(50), date char(50), time char(50));")
 
 cursor.execute("""INSERT INTO events(Event, Owner, Date, Time)
                     VALUES (?,?,?,?)""", (user1.event_name, user1.event_owner, user1.event_date, user1.event_time))
