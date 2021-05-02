@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from .models import User
+from .models import User, Events
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
@@ -25,6 +25,23 @@ def login_post():
     login_user(user)
 
     return redirect(url_for('main.profile'))
+
+@auth.route('/create_event')
+def create_events():
+    return render_template('create_events.html')
+
+@auth.route('/create_event', methods=['POST'])
+def create_events_post():
+    name = request.form.get('name')
+    event_name = request.form.get('event_name')
+    date_time = request.form.get('date_time')
+    caption = request.form.get('caption')
+
+    new_event = Events(name=name, event_name = event_name, date_time = date_time, caption=caption)
+    db.session.add(new_event)
+    db.session.commit()
+    return redirect(url_for('main.index'))
+
 
 @auth.route('/signup') #access sign up page
 def signup():
