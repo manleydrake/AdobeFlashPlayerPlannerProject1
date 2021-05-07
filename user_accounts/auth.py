@@ -3,7 +3,7 @@ from .models import User, Events
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
-
+import datetime
 
 auth = Blueprint('auth',__name__)
 
@@ -35,9 +35,13 @@ def create_events_post():
     name = request.form.get('name')
     event_name = request.form.get('event_name')
     date_time = request.form.get('date_time')
+    date_processing = date_time.replace('T', '-').replace(':', '-').split('-')
+    date_processing = [int(v) for v in date_processing]
+    date_out = datetime.datetime(*date_processing)
+
     caption = request.form.get('caption')
 
-    new_event = Events(name=name, event_name = event_name, date_time = date_time, caption=caption)
+    new_event = Events(name=name, event_name = event_name, date_time = date_out, caption=caption)
     db.session.add(new_event)
     db.session.commit()
     return redirect(url_for('main.index'))
