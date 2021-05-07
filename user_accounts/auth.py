@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .models import User, Events
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 
 auth = Blueprint('auth',__name__)
@@ -41,10 +41,10 @@ def create_events_post():
 
     caption = request.form.get('caption')
 
-    new_event = Events(name=name, event_name = event_name, date_time = date_out, caption=caption)
+    new_event = Events(user_id= current_user.id ,name=name, event_name = event_name, date_time = date_out, caption=caption)
     db.session.add(new_event)
     db.session.commit()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.profile'))
 
 
 @auth.route('/signup') #access sign up page

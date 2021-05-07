@@ -3,6 +3,22 @@
 
 {% block content %}
 <h1 class="title">
-  Welcome to the Calendar Planner App, {{ name }}! 
+  Welcome to the Calendar Planner App!
 </h1>
+<h2>
+  Upcoming events:
+</h2>
+<table border="1">
+  {% for event in data %}
+  <tr>
+    <td>
+      {{event.event_name}} <br>
+      {{event.name}} <br>
+      {{event.date_time}} <br>
+      {{event.caption}}
+      <br>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
